@@ -6,9 +6,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         isEmail: true
-      },
+      }
+    },
     password_digest: {
-      DataTypes.STRING,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     api_key: DataTypes.STRING
