@@ -22,7 +22,7 @@ router.post('/', function(req, res) {
         .catch(error => {
           console.log(error);
           res.setHeader("Content-Type", "application/json");
-          res.status(500).send(JSON.stringify(error));
+          res.status(500).send(JSON.stringify({error: error.errors[0].message}));
         })
       })
     } else {

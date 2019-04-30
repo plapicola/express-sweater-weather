@@ -1,8 +1,16 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
-    email: DataTypes.STRING,
-    password_digest: DataTypes.STRING,
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isEmail: true
+      },
+    password_digest: {
+      DataTypes.STRING,
+      allowNull: false,
+    },
     api_key: DataTypes.STRING
   }, {});
   User.associate = function(models) {
