@@ -7,7 +7,6 @@ const saltRounds = 10;
 
 
 router.post('/', function(req, res) {
-  console.log(req.body);
   if (req.body.email && req.body.password) {
     if (req.body.password === req.body.password_confirmation) {
       bcrypt.hash(req.body.password, saltRounds, function(err, hash){
@@ -18,7 +17,7 @@ router.post('/', function(req, res) {
         })
         .then(user => {
           res.setHeader("Content-Type", "application/json");
-          res.status(201).send(JSON.stringify(user.api_key));
+          res.status(201).send(JSON.stringify({api_key: user.api_key}));
         })
         .catch(error => {
           console.log(error);
