@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../../../models').User;
-require('dotenv').config();
+require('dotenv').config(); // Loads environment variables from .env file
 const https = require('https');
 
+/* GET forecast for a city */
 router.get('/', function(req, res) {
   User.findOne({
     where: {
