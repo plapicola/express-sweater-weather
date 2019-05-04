@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var fetch = require('node-fetch');
-const pry = require('pryjs');
 var User = require('../../../models').User;
 var Location = require('../../../models').Location;
 var Favorite = require('../../../models').Favorite;
