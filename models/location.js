@@ -6,7 +6,10 @@ module.exports = (sequelize, DataTypes) => {
     longitude: DataTypes.FLOAT
   }, {});
   Location.associate = function(models) {
-    // associations can be defined here
+    Location.belongsToMany(models.User, {
+      through: models.Favorite,
+      as: 'users'
+    });
   };
   return Location;
 };

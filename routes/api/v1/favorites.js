@@ -13,7 +13,8 @@ router.post('/', function(req, res) {
   User.findOne({
     where: {
       api_key: req.body.api_key
-    }
+    },
+    include: 'locations'
   })
   .then(user => {
     return new Promise((resolve, reject) => {
@@ -21,15 +22,25 @@ router.post('/', function(req, res) {
     })
   })
   .then(user => {
+    return new Promise((resolve, reject) => {
+      location = user.locations.find(function(element) {
+        return element.name == req.body.location;
+      })
+
+      location ?
+      reject({error: req.body.location + " is already favorited"}) :
+      resolve(user)
+    })
+  })
+  .then(user => {
     foundUser = user;
     return findOrCreateCity(req.body.location);
   })
-  .then(city => {
-    eval(pry.it);
-    locationName = city.name
+  .then(location => {
+    locationName = location.name
     return Favorite.create({
       UserId: foundUser.id,
-      CityId: city.id
+      LocationId: location.id
     })
   })
   .then(() => {
@@ -37,10 +48,8 @@ router.post('/', function(req, res) {
     res.status(201).send(JSON.stringify({message: `${locationName} has been added to your favorites.`}));
   })
   .catch(error => {
-    console.log(error)
-    eval(pry.it);
     res.setHeader("Content-Type", "application/json");
-    res.status(401).send(JSON.stringify({message: "Unable to add location to favorites"}));
+    res.status(401).send(JSON.stringify({message: "Unable to add location to favorites."}));
   })
 })
 
