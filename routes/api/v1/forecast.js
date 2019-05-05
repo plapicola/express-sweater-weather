@@ -1,8 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../../../models').User;
+var GeocodeService = require('../../../services/geocode');
+var ForecastService = require('../../../services/forecast');
 require('dotenv').config(); // Loads environment variables from .env file
-const https = require('https');
 
 /* GET forecast for a city */
 router.get('/', function(req, res) {
@@ -17,10 +18,10 @@ router.get('/', function(req, res) {
     })
   })
   .then(function() {
-    return requestLocation(req.query.location)
+    return GeocodeService.requestLocation(req.query.location)
   })
   .then(function(location) {
-    return requestForecast(location)
+    return ForecastService.requestForecast(location)
   })
   .then(function(forecast) {
     delete forecast.minutely;
@@ -32,41 +33,5 @@ router.get('/', function(req, res) {
     res.status(401).send(JSON.stringify({error: error}))
   })
 })
-
-function requestLocation(location) {
-  return new Promise((resolve, reject) => {
-    https.get(`https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_GEOCODE_KEY}&address=${location}`, response => {
-      let data = '';
-
-      response.on('data', chunk => {
-        data += chunk;
-      });
-
-      response.on('end', () => {
-        resolve((JSON.parse(data).results[0].geometry.location))
-      });
-    }).on('error', error => {
-      reject(error);
-    });
-  });
-}
-
-function requestForecast(location) {
-  return new Promise((resolve, reject) => {
-    https.get(`https://api.darksky.net/forecast/${process.env.DARKSKY_KEY}/${location.lat},${location.lng}`, response => {
-      let data = '';
-
-      response.on('data', chunk => {
-        data += chunk;
-      });
-
-      response.on('end', () => {
-        resolve(JSON.parse(data))
-      });
-    }).on('error', error => {
-      reject(error);
-    });
-  });
-}
 
 module.exports = router;
