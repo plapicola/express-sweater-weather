@@ -1,9 +1,9 @@
-var User = require('../../../models').User;
+var User = require('../models').User;
 var hat = require('hat');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
-module.exports = class UsersFacade {
+module.exports = class UsersCreateFacade {
   constructor(status, body) {
     this.status = status
     this.body = body
@@ -20,17 +20,18 @@ module.exports = class UsersFacade {
               api_key: hat()
             })
             .then(user => {
-              resolve(new UsersFacade(201, {api_key: user.api_key}))
+              resolve(new UsersCreateFacade(201, {api_key: user.api_key}))
             })
             .catch(error => {
-              resolve(new UsersFacade(500, {error: error.errors[0].message}))
+              resolve(new UsersCreateFacade(500, {error: error.errors[0].message}))
             })
           })
         } else {
-          resolve(new UsersFacade(401, {error: "Password doesn't match confirmation"})
+          resolve(new UsersCreateFacade(401, {error: "Password doesn't match confirmation"}))
         }
       } else {
-        resolve(new UsersFacade(401, {error: "Missing fields."})
+        resolve(new UsersCreateFacade(401, {error: "Missing fields."}))
       }
     })
   }
+}
