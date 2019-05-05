@@ -11,4 +11,22 @@ module.exports = class ForecastService {
       .catch(error => reject(error))
     })
   }
+
+  static requestCurrentForecast(location) {
+    return new Promise((resolve, reject) => {
+      fetch(`https://api.darksky.net/forecast/${process.env.DARKSKY_KEY}/${location.latitude},${location.longitude}`)
+      .then(request => {
+        return request.json();
+      })
+      .then(result => {
+        resolve({
+          location: location.name,
+          currently: result.currently
+        })
+      })
+      .catch(error => {
+        reject(error);
+      })
+    })
+  }
 }
