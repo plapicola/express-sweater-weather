@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       })
       .then(user => {
-        user ? resolve(user) : reject({"Invalid API Key"})
+        user ? resolve(user) : reject("Invalid API Key")
       })
       .catch(error => reject(error))
     })
