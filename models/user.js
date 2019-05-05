@@ -1,3 +1,5 @@
+var bcrypt = require('bcrypt');
+
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
@@ -20,6 +22,21 @@ module.exports = (sequelize, DataTypes) => {
       as: 'locations'
    });
   };
+
+  User.authenticate = function(email, password) {
+    return new Promise((resolve, reject) => {
+      User.findOne({
+        where: {
+          email: email
+        }
+      })
+      .then(user => {
+        bcrypt.compare(password, user.password_digest, function(err, match) {
+          match ? resolve(user) : resolve(null)
+        })
+      })
+    })
+  }
 
   User.authorize = function(api_key) {
     return new Promise((resolve, reject) => {
