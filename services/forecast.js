@@ -1,4 +1,6 @@
 var fetch = require('node-fetch');
+require('dotenv').config(); // Loads environment variables from .env file
+
 
 module.exports = class ForecastService {
   static requestForecast(location) {
