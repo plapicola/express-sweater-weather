@@ -4,22 +4,29 @@ var fetch = require('node-fetch');
 var User = require('../../../models').User;
 var Location = require('../../../models').Location;
 var Favorite = require('../../../models').Favorite;
+var pry = require('pryjs');
+
+/* GET all favorites for use */
+router.get('/', function(req, res) {
+  lookupUser(req.body.api_key)
+  .then(user => {
+    return getFavoritesForecast(user.locations);
+  })
+  .then(favorites => {
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).send(favorites);
+  })
+  .catch(error => {
+    res.setHeader("Content-Type", "application/json");
+    res.status(403).send(error);
+  })
+})
 
 /* POST new favorite */
 router.post('/', function(req, res) {
   var foundUser;
   var locationName;
-  User.findOne({
-    where: {
-      api_key: req.body.api_key
-    },
-    include: 'locations'
-  })
-  .then(user => {
-    return new Promise((resolve, reject) => {
-      user ? resolve(user) : reject("Invalid API Key")
-    })
-  })
+  lookupUser(req.body.api_key)
   .then(user => {
     return new Promise((resolve, reject) => {
       location = user.locations.find(function(element) {
@@ -51,6 +58,23 @@ router.post('/', function(req, res) {
     res.status(401).send(JSON.stringify({message: "Unable to add location to favorites."}));
   })
 })
+
+function lookupUser(api_key) {
+  return new Promise((resolve, reject) => {
+    User.findOne({
+      where: {
+        api_key: api_key
+      },
+      include: 'locations'
+    })
+    .then(user => {
+      user ? resolve(user) : reject("Invalid API Key")
+    })
+    .catch(error => {
+      reject(error)
+    })
+  })
+}
 
 function findOrCreateCity(location) {
   return new Promise((resolve, reject) => {
@@ -84,6 +108,30 @@ function findOrCreateCity(location) {
     })
     .catch(function(error) {
       reject()
+    })
+  })
+}
+
+function getFavoritesForecast(locations) {
+  return Promise.all(locations.map(location => {
+    return requestCurrentForecast(location);
+  }))
+}
+
+function requestCurrentForecast(location) {
+  return new Promise((resolve, reject) => {
+    fetch(`https://api.darksky.net/forecast/${process.env.DARKSKY_KEY}/${location.latitude},${location.longitude}`)
+    .then(request => {
+      return request.json();
+    })
+    .then(result => {
+      resolve({
+        location: location.name,
+        currently: result.currently
+      })
+    })
+    .catch(error => {
+      reject(error);
     })
   })
 }
