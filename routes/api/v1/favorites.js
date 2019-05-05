@@ -5,7 +5,7 @@ var User = require('../../../models').User;
 var Location = require('../../../models').Location;
 var Favorite = require('../../../models').Favorite;
 var FavoritesIndexFacade = require('../../../facades/favorites_index');
-var pry = require('pryjs');
+var FavoritesDeleteFacade = require('../../../facades/favorites_delete');
 
 /* GET all favorites for use */
 router.get('/', function(req, res) {
@@ -23,7 +23,7 @@ router.get('/', function(req, res) {
 router.post('/', function(req, res) {
   var foundUser;
   var locationName;
-  lookupUser(req.body.api_key)
+  User.authorize(req.body.api_key)
   .then(user => {
     return new Promise((resolve, reject) => {
       location = user.locations.find(function(element) {
@@ -58,20 +58,13 @@ router.post('/', function(req, res) {
 
 /* DELETE a favorite */
 router.delete('/', function(req, res) {
-  Promise.all([
-    User.authorize(req.body.api_key),
-    Location.findOne({ where: { name: req.body.location }})
-  ])
-  .then(([user, location]) => {
-    Favorite.destroy({ where: { UserId: user.id, LocationId: location.id }})
+  res.setHeader("Content-Type", "application/json");
+  FavoritesDeleteFacade.deleteFavorite(req.body.api_key, req.body.location)
+  .then(facade => {
+    res.status(facade.status).send(facade.body);
   })
-  .then(() => {
-    res.setHeader("Content-Type", "application/json");
-    res.status(204).send();
-  })
-  .catch(error => {
-    res.setHeader("Content-Type", "application/json");
-    res.status(401).send(error);
+  .catch(facade => {
+    res.status(500).send(facade.body);
   })
 })
 
