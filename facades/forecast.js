@@ -12,7 +12,7 @@ module.exports = class ForecastFacade {
 
   static forecastForUser(api_key, location) {
     return new Promise((resolve, reject) => {
-      User.authenticate(api_key)
+      User.authorize(api_key)
       .then(function() {
         return GeocodeService.requestLocation(location)
       })

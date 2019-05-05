@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
    });
   };
 
-  User.authenticate = function(api_key) {
+  User.authorize = function(api_key) {
     return new Promise((resolve, reject) => {
       User.findOne({
         where: {
