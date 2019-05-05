@@ -1,4 +1,5 @@
 var bcrypt = require('bcrypt');
+var pry = require('pryjs');
 
 'use strict';
 module.exports = (sequelize, DataTypes) => {
@@ -43,7 +44,8 @@ module.exports = (sequelize, DataTypes) => {
       User.findOne({
         where: {
           api_key: api_key
-        }
+        },
+        include: 'locations'
       })
       .then(user => {
         user ? resolve(user) : reject({error: "Invalid API Key"})

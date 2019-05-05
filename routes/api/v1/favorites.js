@@ -4,21 +4,18 @@ var fetch = require('node-fetch');
 var User = require('../../../models').User;
 var Location = require('../../../models').Location;
 var Favorite = require('../../../models').Favorite;
+var FavoritesIndexFacade = require('../../../facades/favorites_index');
 var pry = require('pryjs');
 
 /* GET all favorites for use */
 router.get('/', function(req, res) {
-  lookupUser(req.body.api_key)
-  .then(user => {
-    return getFavoritesForecast(user.locations);
+  res.setHeader("Content-Type", "application/json");
+  FavoritesIndexFacade.getFavorites(req.body.api_key)
+  .then(facade => {
+    res.status(facade.status).send(facade.body);
   })
-  .then(favorites => {
-    res.setHeader("Content-Type", "application/json");
-    res.status(200).send(favorites);
-  })
-  .catch(error => {
-    res.setHeader("Content-Type", "application/json");
-    res.status(403).send(error);
+  .catch(facade => {
+    res.status(500).send(facade.body);
   })
 })
 
@@ -62,7 +59,7 @@ router.post('/', function(req, res) {
 /* DELETE a favorite */
 router.delete('/', function(req, res) {
   Promise.all([
-    lookupUser(req.body.api_key),
+    User.authorize(req.body.api_key),
     Location.findOne({ where: { name: req.body.location }})
   ])
   .then(([user, location]) => {
@@ -77,23 +74,6 @@ router.delete('/', function(req, res) {
     res.status(401).send(error);
   })
 })
-
-function lookupUser(api_key) {
-  return new Promise((resolve, reject) => {
-    User.findOne({
-      where: {
-        api_key: api_key
-      },
-      include: 'locations'
-    })
-    .then(user => {
-      user ? resolve(user) : reject("Invalid API Key")
-    })
-    .catch(error => {
-      reject(error)
-    })
-  })
-}
 
 function findOrCreateCity(location) {
   return new Promise((resolve, reject) => {
@@ -131,28 +111,5 @@ function findOrCreateCity(location) {
   })
 }
 
-function getFavoritesForecast(locations) {
-  return Promise.all(locations.map(location => {
-    return requestCurrentForecast(location);
-  }))
-}
-
-function requestCurrentForecast(location) {
-  return new Promise((resolve, reject) => {
-    fetch(`https://api.darksky.net/forecast/${process.env.DARKSKY_KEY}/${location.latitude},${location.longitude}`)
-    .then(request => {
-      return request.json();
-    })
-    .then(result => {
-      resolve({
-        location: location.name,
-        currently: result.currently
-      })
-    })
-    .catch(error => {
-      reject(error);
-    })
-  })
-}
 
 module.exports = router;
