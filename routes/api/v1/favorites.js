@@ -59,6 +59,25 @@ router.post('/', function(req, res) {
   })
 })
 
+/* DELETE a favorite */
+router.delete('/', function(req, res) {
+  Promise.all([
+    lookupUser(req.body.api_key),
+    Location.findOne({ where: { name: req.body.location }})
+  ])
+  .then(([user, location]) => {
+    Favorite.destroy({ where: { UserId: user.id, LocationId: location.id }})
+  })
+  .then(() => {
+    res.setHeader("Content-Type", "application/json");
+    res.status(204).send();
+  })
+  .catch(error => {
+    res.setHeader("Content-Type", "application/json");
+    res.status(401).send(error);
+  })
+})
+
 function lookupUser(api_key) {
   return new Promise((resolve, reject) => {
     User.findOne({
