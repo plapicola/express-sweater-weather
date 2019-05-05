@@ -7,16 +7,7 @@ require('dotenv').config(); // Loads environment variables from .env file
 
 /* GET forecast for a city */
 router.get('/', function(req, res) {
-  User.findOne({
-    where: {
-      api_key: req.body.api_key
-    }
-  })
-  .then(user => {
-    return new Promise((resolve, reject) => {
-      user ? resolve(user) : reject("Invalid API Key")
-    })
-  })
+  User.authenticate(req.body.api_key)
   .then(function() {
     return GeocodeService.requestLocation(req.query.location)
   })
