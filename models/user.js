@@ -31,9 +31,13 @@ module.exports = (sequelize, DataTypes) => {
         }
       })
       .then(user => {
-        bcrypt.compare(password, user.password_digest, function(err, match) {
-          match ? resolve(user) : resolve(null)
-        })
+        if (user) {
+          bcrypt.compare(password, user.password_digest, function(err, match) {
+            match ? resolve(user) : resolve(null)
+          })
+        } else {
+          resolve(null)
+        }
       })
     })
   }
@@ -49,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
       .then(user => {
         user ? resolve(user) : reject({error: "Invalid API Key"})
       })
-      .catch(error => reject(error))
+      .catch(error => reject({error: "Invalid API Key"}))
     })
   }
   return User;
