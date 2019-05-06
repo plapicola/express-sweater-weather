@@ -357,6 +357,7 @@ body:
 {
   "error": "Invalid API Key"
 }
+```
 
 ##### Known Issues
 
