@@ -31,9 +31,13 @@ module.exports = (sequelize, DataTypes) => {
         }
       })
       .then(user => {
-        bcrypt.compare(password, user.password_digest, function(err, match) {
-          match ? resolve(user) : resolve(null)
-        })
+        if (user) {
+          bcrypt.compare(password, user.password_digest, function(err, match) {
+            match ? resolve(user) : resolve(null)
+          })
+        } else {
+          resolve(null)
+        }
       })
     })
   }
