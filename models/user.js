@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
       .then(user => {
         user ? resolve(user) : reject({error: "Invalid API Key"})
       })
-      .catch(error => reject(error))
+      .catch(error => reject({error: "Invalid API Key"}))
     })
   }
   return User;

@@ -23,7 +23,7 @@ module.exports = class UsersCreateFacade {
               resolve(new UsersCreateFacade(201, {api_key: user.api_key}))
             })
             .catch(error => {
-              resolve(new UsersCreateFacade(500, {error: error.errors[0].message}))
+              resolve(new UsersCreateFacade(401, {error: error.errors[0].message}))
             })
           })
         } else {
