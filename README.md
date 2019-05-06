@@ -128,7 +128,7 @@ Accept: application/json
 }
 ```
 
-If the request is successful, the application responds with a 200 status, and a forecast object containing the location, current weather (currently), an hourly breakdown (hourly), and a daily forecast (daily). A sample response can be seen below (Only one hourly and daily value are shown).
+If the request is successful, the application responds with a 200 status, and a forecast object containing the location, current weather (currently), an hourly breakdown (hourly), and a daily forecast (daily). A sample response can be seen below (only one hourly and daily value are shown).
 
 ``` HTTP
 status: 200
@@ -240,7 +240,7 @@ body:
 
 ###### Creating favorites
 
-The application supports the creating of favorite locations for authenticated users via a `POST` request to the `/api/v1/favorites` endpoint. This request must include an API key and a location in the body.
+The application supports the creation of favorite locations for authenticated users via a `POST` request to the `/api/v1/favorites` endpoint. This request must include an API key and a location in the body.
 
 ``` HTTP
 POST /api/v1/favorites
@@ -365,7 +365,7 @@ body:
 
 - At this time, the error messaging could be more verbose to better indicate the reason for a bad request on favorite endpoints
 
-- The application should make efforts remove the country abbreviation from some requests
+- The application should make efforts to remove the country abbreviation from some requests
 
 - The application will re-geocode a location if the formatting of a forecast does not match the exact formatting of a resolved address
 
