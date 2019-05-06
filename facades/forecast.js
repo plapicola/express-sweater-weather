@@ -25,7 +25,7 @@ module.exports = class ForecastFacade {
         resolve(new ForecastFacade(200, forecast)); // Got valid forecast, send 200
       })
       .catch(error => {
-        resolve(new ForecastFacade(401, error)); // Bad request, send 401 and error
+        resolve(new ForecastFacade(401, {error: "Invalid API Key"})); // Bad request, send 401 and error
       })
     })
   }
