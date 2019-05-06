@@ -50,7 +50,7 @@ Accept: application/json
 
 {
   "email": "peter@lapicola.com",
-  "password": "password"
+  "password": "password",
   "password_confirmation": "password"
 }
 ```
