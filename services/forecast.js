@@ -7,26 +7,11 @@ module.exports = class ForecastService {
     return new Promise((resolve, reject) => {
       fetch(`https://api.darksky.net/forecast/${process.env.DARKSKY_KEY}/${location.latitude},${location.longitude}`)
       .then(response => response.json())
-      .then(result => resolve(result))
-      .catch(error => reject(error))
-    })
-  }
-
-  static requestCurrentForecast(location) {
-    return new Promise((resolve, reject) => {
-      fetch(`https://api.darksky.net/forecast/${process.env.DARKSKY_KEY}/${location.latitude},${location.longitude}`)
-      .then(request => {
-        return request.json();
-      })
       .then(result => {
-        resolve({
-          location: location.name,
-          currently: result.currently
-        })
+        result.location = location.name
+        resolve(result)
       })
-      .catch(error => {
-        reject(error);
-      })
+      .catch(error => reject(error))
     })
   }
 }

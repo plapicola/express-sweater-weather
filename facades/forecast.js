@@ -2,6 +2,7 @@ var User = require('../models').User;
 var GeocodeService = require('../services/geocode');
 var ForecastService = require('../services/forecast');
 var LocationHelper = require('../helpers/location');
+var ForecastSerializer = require('../serializers/forecast');
 
 module.exports = class ForecastFacade {
   /* Facade object contains the status and body of the response,
@@ -21,11 +22,11 @@ module.exports = class ForecastFacade {
         return ForecastService.requestForecast(location)
       })
       .then(function(forecast) {
-        delete forecast.minutely;
-        resolve(new ForecastFacade(200, forecast)); // Got valid forecast, send 200
+        let formattedForecast = ForecastSerializer.formatForecast(forecast)
+        resolve(new ForecastFacade(200, formattedForecast)); // Got valid forecast, send 200
       })
       .catch(error => {
-        resolve(new ForecastFacade(401, error)); // Bad request, send 401 and error
+        resolve(new ForecastFacade(401, {error: "Invalid API Key"})); // Bad request, send 401 and error
       })
     })
   }

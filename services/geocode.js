@@ -7,7 +7,9 @@ module.exports = class GeocodeService {
     return new Promise((resolve, reject) => {
       fetch(`https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_GEOCODE_KEY}&address=${location}`)
       .then(response => response.json())
-      .then(result => resolve(result.results[0].geometry.location))
+      .then(result => {
+        resolve(result.results[0])
+      })
       .catch(error => reject(error))
     })
   }

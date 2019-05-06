@@ -17,13 +17,15 @@ module.exports = class LocationHelper {
         }
       })
       .then(response => {
-        return Location.create({
-          name: location,
-          latitude: response.lat,
-          longitude: response.lng
+        return Location.findOrCreate({
+          where: {
+            name: response.formatted_address,
+            latitude: response.geometry.location.lat,
+            longitude: response.geometry.location.lng
+          }
         })
       })
-      .then(function(location) {
+      .then(function([location, created]) {
         resolve(location)
       })
       .catch(function(error) {

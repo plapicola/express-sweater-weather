@@ -1,5 +1,4 @@
 var bcrypt = require('bcrypt');
-var pry = require('pryjs');
 
 'use strict';
 module.exports = (sequelize, DataTypes) => {

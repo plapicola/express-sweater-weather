@@ -1,6 +1,6 @@
 var User = require('../models').User;
 var ForecastService = require('../services/forecast');
-var pry = require('pryjs');
+var ForecastSerializer = require('../serializers/forecast');
 
 module.exports = class FavoritesIndexFacade {
   constructor(status, body) {
@@ -15,7 +15,8 @@ module.exports = class FavoritesIndexFacade {
         return getFavoritesForecast(user.locations);
       })
       .then(favorites => {
-        resolve(new FavoritesIndexFacade(200, favorites));
+        let formattedFavorites = ForecastSerializer.formatFavorites(favorites);
+        resolve(new FavoritesIndexFacade(200, formattedFavorites));
       })
       .catch(error => {
         resolve(new FavoritesIndexFacade(401, error));
@@ -26,6 +27,6 @@ module.exports = class FavoritesIndexFacade {
 
 function getFavoritesForecast(locations) {
   return Promise.all(locations.map(location => {
-    return ForecastService.requestCurrentForecast(location);
+    return ForecastService.requestForecast(location);
   }))
 }
