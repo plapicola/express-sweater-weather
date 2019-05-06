@@ -1,5 +1,4 @@
 var User = require('../models').User;
-// var Location = require('../models').Location;
 var Favorite = require('../models').Favorite;
 var GeocodeService = require('../services/geocode');
 var LocationHelper = require('../helpers/location');
