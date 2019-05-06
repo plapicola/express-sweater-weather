@@ -359,7 +359,7 @@ body:
 }
 ```
 
-##### Known Issues
+### Known Issues
 
 - The application requires testing backfill
 
@@ -369,15 +369,15 @@ body:
 
 - The application will re-geocode a location if the formatting of a forecast does not match the exact formatting of a resolved address
 
-##### Testing
+### Testing
 
 At this time, the application does not have testing implemented.
 
-##### Contributing
+### Contributing
 
 To contribute to this project, please fork and issue a pull request to the master branch with a note indicating changes made.
 
-###### Core Contributors
+### Core Contributors
 
 @plapicola - Author
 
@@ -385,11 +385,11 @@ To contribute to this project, please fork and issue a pull request to the maste
 
 @aprildagonese - Reviewer
 
-##### Database Schema
+### Database Schema
 
 ![Database Schema](/express-sweater-weather-schema.png)
 
-##### Tech Stack
+### Tech Stack
 
 This application was built using the following technologies:
 
