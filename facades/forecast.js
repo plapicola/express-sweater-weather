@@ -1,6 +1,7 @@
 var User = require('../models').User;
 var GeocodeService = require('../services/geocode');
 var ForecastService = require('../services/forecast');
+var LocationHelper = require('../helpers/location');
 
 module.exports = class ForecastFacade {
   /* Facade object contains the status and body of the response,
@@ -14,7 +15,7 @@ module.exports = class ForecastFacade {
     return new Promise((resolve, reject) => {
       User.authorize(api_key)
       .then(function() {
-        return GeocodeService.requestLocation(location)
+        return LocationHelper.findOrCreateCity(location)
       })
       .then(function(location) {
         return ForecastService.requestForecast(location)
