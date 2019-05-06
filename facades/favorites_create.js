@@ -1,7 +1,8 @@
 var User = require('../models').User;
-var Location = require('../models').Location;
+// var Location = require('../models').Location;
 var Favorite = require('../models').Favorite;
 var GeocodeService = require('../services/geocode');
+var LocationHelper = require('../helpers/location');
 
 module.exports = class FavoritesCreateFacade {
   constructor(status, body) {
@@ -18,7 +19,7 @@ module.exports = class FavoritesCreateFacade {
       })
       .then(user => {
         foundUser = user;
-        return findOrCreateCity(location);
+        return LocationHelper.findOrCreateCity(location);
       })
       .then(location => {
         locationName = location.name
@@ -45,35 +46,5 @@ function verifyNotFavorite(user, location) {
     location ?
     reject({error: location + " is already favorited"}) :
     resolve(user)
-  })
-}
-
-function findOrCreateCity(location) {
-  return new Promise((resolve, reject) => {
-    Location.findOne({
-      where: {
-        name: location
-      }
-    })
-    .then(function(foundLocation) {
-      if (foundLocation) {
-        resolve(foundLocation);
-      } else {
-        return GeocodeService.requestLocation(location)
-      }
-    })
-    .then(response => {
-      return Location.create({
-        name: location,
-        latitude: response.lat,
-        longitude: response.lng
-      })
-    })
-    .then(function(location) {
-      resolve(location)
-    })
-    .catch(function(error) {
-      reject()
-    })
   })
 }
