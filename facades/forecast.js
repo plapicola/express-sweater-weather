@@ -3,7 +3,6 @@ var GeocodeService = require('../services/geocode');
 var ForecastService = require('../services/forecast');
 var LocationHelper = require('../helpers/location');
 var ForecastSerializer = require('../serializers/forecast');
-var pry = require('pryjs');
 
 module.exports = class ForecastFacade {
   /* Facade object contains the status and body of the response,

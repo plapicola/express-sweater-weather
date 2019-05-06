@@ -1,5 +1,3 @@
-var pry = require('pryjs');
-
 module.exports = class ForecastSerializer {
   static formatForecast(forecast) {
     return {
